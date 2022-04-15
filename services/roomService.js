@@ -2,6 +2,9 @@ const moment = require('moment')
 
 class RoomService {
 
+    // Check data get by /timetables
+    // Check is open boolean and if the date wanted is between opening/closing time.
+    //return boolean
     static isRoomIsOpenAtThisTime(apiData, date) {
         let data = Object.assign(apiData.timetables);
         let isOpenInOpeningTime = false;
@@ -14,6 +17,9 @@ class RoomService {
         return apiData.open && isOpenInOpeningTime;
     }
 
+    // Check data get by /reservations
+    // Check is date time is not reserved by another group.
+    // return boolean
     static isRoomAvailableAtThisTime(apiData, date) {
         let data = Object.assign(apiData.reservations);
         let isAvailableAtThisTime = true;
@@ -26,6 +32,8 @@ class RoomService {
         return isAvailableAtThisTime;
     }
 
+    //Check all conditions
+    //return boolean
     static isAvailableAfterAllCheck(isOpenInOpeningTime, isAvailableAtThisTime) {
         return isOpenInOpeningTime && isAvailableAtThisTime;
     }

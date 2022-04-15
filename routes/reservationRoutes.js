@@ -3,9 +3,10 @@ const roomService = require('../services/roomService');
 const axios = require('axios');
 const moment = require('moment');
 
+
 reservationRouter.get('/available/', async (req,res) => {
-   const date = new Date(req.query.date);
-   const resourceId = req.query.resourceId;
+   const date = new Date(req.query.date); // reservation date
+   const resourceId = req.query.resourceId; //room id
 
    axios.all([
       axios.get('http://localhost:8080/reservations', {params: { date: date, resourceId: resourceId }, timeout: 3000}),
