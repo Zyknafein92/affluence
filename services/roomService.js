@@ -1,36 +1,34 @@
-const room = require('../models/room')
-const reservation = require('../models/reservation')
-
-// {
-//     "reservations": [
-//     {
-//         "reservationStart": "2022-04-14 08:00:00",
-//         "reservationEnd": "2022-04-14 09:00:00"
-//     },
-//     {
-//         "reservationStart": "2022-04-14 10:00:00",
-//         "reservationEnd": "2022-04-14 11:00:00"
-//     },
-//     {
-//         "reservationStart": "2022-04-14 15:00:00",
-//         "reservationEnd": "2022-04-14 16:00:00"
-//     }
-// ]
-// }
+const moment = require('moment')
 
 class RoomService {
 
-    static getRoomReservations(reservations) {
-
+    static isRoomIsOpenAtThisTime(apiData, date) {
+        let data = Object.assign(apiData.timetables);
+        let isOpenInOpeningTime = false;
+        for(const dKey of data) {
+            if(moment(date) >= moment(dKey.opening) && moment(date) <= moment(dKey.closing) && moment(date).add(1,'h') <= moment(dKey.closing)) {
+                isOpenInOpeningTime = true;
+                break;
+            }
+        }
+        return apiData.open && isOpenInOpeningTime;
     }
 
-    static getRoomTimetables() {
-
+    static isRoomAvailableAtThisTime(apiData, date) {
+        let data = Object.assign(apiData.reservations);
+        let isAvailableAtThisTime = true;
+        for(const dKey of data) {
+             if(moment(date) < moment(dKey.reservationEnd) && moment(date).add(1,'h') > moment(dKey.reservationStart)) {
+                 isAvailableAtThisTime = false;
+                 break;
+             }
+        }
+        return isAvailableAtThisTime;
     }
 
-    static isAvaible() {
-
- }
+    static isAvailableAfterAllCheck(isOpenInOpeningTime, isAvailableAtThisTime) {
+        return isOpenInOpeningTime && isAvailableAtThisTime;
+    }
 }
 
 module.exports = RoomService;
